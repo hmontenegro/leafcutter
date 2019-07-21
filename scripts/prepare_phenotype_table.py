@@ -35,7 +35,7 @@ def stream_table(f, ss = ''):
             except: break
         yield attr
 
-def main(ratio_file, pcs=50):
+def main(ratio_file, pcs=50, nchrs=23):
     
     dic_pop, fout = {}, {}
     try: open(ratio_file)
@@ -44,7 +44,7 @@ def main(ratio_file, pcs=50):
         return
 
     sys.stderr.write("Starting...\n")
-    for i in range(1,23):
+    for i in range(1,nchrs):
         fout[i] = file(ratio_file+".phen_chr%d"%i,'w')
         fout_ave = file(ratio_file+".ave",'w')
     valRows, valRowsnn, geneRows = [], [], []
@@ -119,7 +119,7 @@ def main(ratio_file, pcs=50):
         
     # write the corrected tables
     fout = {}
-    for i in range(1,23):
+    for i in range(1,nchrs):
         fn="%s.qqnorm_chr%d"%(ratio_file,i)
         print("Outputting: " + fn)
         fout[i] = file(fn,'w')
@@ -162,11 +162,12 @@ def main(ratio_file, pcs=50):
 
 if __name__ == "__main__":
 
-    parser = OptionParser(usage="usage: %prog [-p num_PCs] input_perind.counts.gz")
+    parser = OptionParser(usage="usage: %prog [-p num_PCs] [-c num_chromosomes] input_perind.counts.gz")
     parser.add_option("-p", "--pcs", dest="npcs", default = 50, help="number of PCs output")
+    parser.add_option("-c", "--chrs", dest="nchrs", default = 23, help="number of chromosomes")
     (options, args) = parser.parse_args()
     if len(args)==0:
         sys.stderr.write("Error: no ratio file provided... (e.g. python leafcutter/scripts/prepare_phenotype_table.py input_perind.counts.gz\n")
         exit(0)
-    main(args[0], int(options.npcs) )
+    main(args[0], int(options.npcs), int(options.nchrs) )
     
